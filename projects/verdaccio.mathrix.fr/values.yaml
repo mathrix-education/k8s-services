@@ -1,0 +1,89 @@
+image:
+  repository: eu.gcr.io/mathrix-education/verdaccio
+  tag: latest
+  pullPolicy: Always
+
+service:
+  annotations: {}
+  clusterIP: ""
+
+  externalIPs: []
+
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  port: 4873
+  type: NodePort
+
+nodeSelector: {}
+
+tolerations: []
+
+podAnnotations: {}
+replicaCount: 1
+
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 512Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 512Mi
+
+ingress:
+  enabled: true
+  hosts:
+    - verdaccio.mathrix.fr
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  tls:
+    - secretName: verdaccio.mathrix.fr-secret
+      hosts:
+        - verdaccio.mathrix.fr
+
+configMap: |
+
+  storage: /verdaccio/storage/data
+
+  web:
+    enable: true
+    title: Mathrix Tech Registry - Vedaccio
+    logo: https://cdn.mathrix.fr/img/logo-white-mode-machine.png
+    primary_color: "#008989"
+    scope: "@mathrix"
+  auth:
+    github-oauth-ui:
+      org: mathrix-education
+  uplinks:
+    npmjs:
+      url: https://registry.npmjs.org/
+  packages:
+    '@*/*':
+      access: $authenticated
+      publish: $authenticated
+      proxy: npmjs
+    '**':
+      access: $authenticated
+      publish: $authenticated
+      proxy: npmjs
+  middlewares:
+    audit:
+      enabled: true
+    github-oauth-ui:
+      client-id: fb9b779062d1a2d3d2ad
+      client-secret: ***REMOVED***
+  logs:
+    - {type: stdout, format: pretty, level: http}
+
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 8Gi
+  volumes:
+  mounts:
+securityContext:
+  enabled: true
+  runAsUser: 100
+  fsGroup: 101
+
+

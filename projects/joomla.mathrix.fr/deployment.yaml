@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: education-joomla
+    environment: dev
+    tier: joomla
+  name: joomla
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: joomla
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: joomla
+    spec:
+      containers:
+      - env:
+        - name: JOOMLA_DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: JOOMLA_DB_HOST
+              name: joomla-config
+        - name: JOOMLA_DB_USER
+          valueFrom:
+            configMapKeyRef:
+              key: JOOMLA_DB_USER
+              name: joomla-config
+        - name: JOOMLA_DB_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: JOOMLA_DB_PASSWORD
+              name: joomla-config
+        image: eu.gcr.io/mathrix-education/joomla:latest
+        imagePullPolicy: Always
+        name: joomla
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/www/html
+          name: joomla-pv
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: joomla-pv
+        persistentVolumeClaim:
+          claimName: joomla-pvc
+

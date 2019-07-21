@@ -1,0 +1,19 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: sonarqube.mathrix.fr-certificate
+  namespace: default
+spec:
+  secretName: sonarqube.mathrix.fr-secret
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  commonName: sonarqube.mathrix.fr
+  dnsNames:
+  - sonarqube.mathrix.fr
+  acme:
+    config:
+    - dns01:
+        provider: clouddns
+      domains:
+      - sonarqube.mathrix.fr

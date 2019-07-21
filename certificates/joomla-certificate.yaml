@@ -1,0 +1,19 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: grimoire.mathrix.fr-certificate
+  namespace: default
+spec:
+  secretName: grimoire.mathrix.fr-secret
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  commonName: grimoire.mathrix.fr
+  dnsNames:
+  - grimoire.mathrix.fr
+  acme:
+    config:
+    - dns01:
+        provider: clouddns
+      domains:
+      - grimoire.mathrix.fr

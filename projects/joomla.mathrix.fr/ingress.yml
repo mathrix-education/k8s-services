@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_clear_headers Server;
+    nginx.org/server-snippets: gzip on; gzip_proxied any; gzip_types image/jpeg;
+  labels:
+    app: education-joomla
+    environment: dev
+    tier: joomla
+  name: joomla-ingress
+  namespace: default
+spec:
+  rules:
+    - host: grimoire.mathrix.fr
+      http:
+        paths:
+          - backend:
+              serviceName: joomla-service
+              servicePort: 80
+            path: /
+  tls:
+    - hosts:
+        - grimoire.mathrix.fr
+      secretName: grimoire.mathrix.fr-secret

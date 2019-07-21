@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  JOOMLA_DB_HOST: 10.98.80.3
+  JOOMLA_DB_PASSWORD: SepPK,3_^fp53Sq4
+  JOOMLA_DB_USER: joomla
+kind: ConfigMap
+metadata:
+  labels:
+    app: joomla
+  name: joomla-config
+  namespace: default
